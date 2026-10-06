@@ -39,14 +39,14 @@ const courseSchema = new mongoose.Schema(
 
         status: {
             type: String,
-            enum: ['draft', 'published'],
+            enum: ['draft', 'published' , 'archived'],
             default: 'draft',
         },
 
         trainer: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
+            ref:'User',
             required: true,
-            trim: true,
         },
 
         publishedAt: {
