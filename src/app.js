@@ -5,6 +5,7 @@ import express from 'express'
 import courseRoutes from './routes/courseRoutes.js';
 import moduleRoutes from './routes/moduleRoutes.js';
 import resourceRoutes from './routes/resourceRoutes.js';
+import authRoute from './routes/authRoutes.js'
 
 import { notFound } from './middlewares/notFound.js';
 import { errorHandler } from './middlewares/errorHandler.js';
@@ -14,6 +15,7 @@ app.use(express.json())
 app.use('/api/courses', courseRoutes);
 app.use('/api/modules', moduleRoutes);
 app.use('/api/resources', resourceRoutes);
+app.use('/api/auth' , authRoute);
 
 app.use(notFound);
 app.use(errorHandler);
