@@ -16,9 +16,10 @@ export function auth(req, res, next) {
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
         req.user = {
-            id: req.id,
-            role: req.role
+            id: decoded.id,
+            role: decoded.role
         }
+        // console.log(req.user)
 
         next()
     } catch (error) {
