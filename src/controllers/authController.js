@@ -25,12 +25,17 @@ export async function login(req, res, next) {
     try {
         const { email, password } = req.body;
 
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email }).select('+password');
 
 
         if (!user) {
             return res.status(401).json({
                 message: "Invalid credentials"
+            })
+        }
+        if (user.status === 'disabled') {
+            return res.status(403).json({
+                message: "Account is disabled"
             })
         }
         const isPasswordValid = await user.comparePassword(password);

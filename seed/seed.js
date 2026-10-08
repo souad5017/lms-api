@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 
+import User from '../src/models/User.js';
 import Course from '../src/models/Course.js';
 import Module from '../src/models/Module.js';
 import Resource from '../src/models/Resource.js';
@@ -14,11 +15,37 @@ const seed = async () => {
     await Resource.deleteMany({});
     await Module.deleteMany({});
     await Course.deleteMany({});
+    await User.deleteMany({});
+
+    const admin = await User.create({
+      name: 'Admin',
+      email: 'admin@lms.com',
+      password: 'Admin1234',
+      role: 'admin',
+      status: 'active',
+    });
+
+    const trainer = await User.create({
+      name: 'Trainer',
+      email: 'trainer@lms.com',
+      password: 'Trainer1234',
+      role: 'trainer',
+      status: 'active',
+    });
+
+    const learner = await User.create({
+      name: 'Learner',
+      email: 'learner@lms.com',
+      password: 'Learner1234',
+      role: 'learner',
+      status: 'active',
+    });
 
     const courses = await Course.insertMany([
       {
         title: 'JavaScript Moderne',
-        description: 'Apprendre les bases et les fonctionnalités modernes de JavaScript.',
+        description:
+          'Apprendre les bases et les fonctionnalités modernes de JavaScript.',
         objectives: [
           'Comprendre les bases de JavaScript',
           'Manipuler le DOM',
@@ -28,7 +55,7 @@ const seed = async () => {
         category: 'JavaScript',
         duration: 20,
         status: 'published',
-        trainer: 'Souad',
+        trainer: trainer._id,
         publishedAt: new Date(),
       },
       {
@@ -43,12 +70,13 @@ const seed = async () => {
         category: 'Backend',
         duration: 25,
         status: 'published',
-        trainer: 'Aymane',
+        trainer: trainer._id,
         publishedAt: new Date(),
       },
       {
         title: 'MongoDB et Mongoose',
-        description: 'Découvrir MongoDB et manipuler les données avec Mongoose.',
+        description:
+          'Découvrir MongoDB et manipuler les données avec Mongoose.',
         objectives: [
           'Comprendre MongoDB',
           'Créer des modèles Mongoose',
@@ -58,7 +86,7 @@ const seed = async () => {
         category: 'Database',
         duration: 18,
         status: 'draft',
-        trainer: 'Yassine',
+        trainer: trainer._id,
       },
     ]);
 
@@ -149,6 +177,9 @@ const seed = async () => {
     ]);
 
     console.log('Seed completed');
+    console.log('Admin:', admin.email);
+    console.log('Trainer:', trainer.email);
+    console.log('Learner:', learner.email);
 
     await mongoose.disconnect();
   } catch (error) {
