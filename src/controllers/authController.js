@@ -27,6 +27,7 @@ export async function login(req, res, next) {
 
         const user = await User.findOne({ email }).select('+password');
 
+        // console.log(req.body)
 
         if (!user) {
             return res.status(401).json({
