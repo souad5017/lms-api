@@ -53,11 +53,71 @@ export async function getCourseById(req, res, next) {
     if (!course) {
       return res.status(404).json({
         message: 'Course not found'
-      });   
+      });
     }
 
     res.status(200).json(course);
   } catch (error) {
     next(error);
+  }
+}
+
+export async function createCourse(req, res, next) {
+  try {
+    const { title, description, objectives, level, category, duration, status }
+      = req.body
+
+    const course = await Course.create({
+      title, description, objectives, level, category, duration, status,
+      trainer: req.user.id
+    })
+
+    res.status(201).json({
+      message: 'Course created successfully',
+      course
+    })
+  } catch (err) {
+    next(err)
+  }
+
+}
+
+export async function updateCourse(req, res, next) {
+  try {
+    const { id } = req.params
+    const updateData = req.body
+
+    const course = await Course.findById(id);
+    
+    if (!course) {
+      return res.status(404).json({
+        message: 'not found'
+      })
+    }
+
+    const isOwner = course.instructor.toString() === req.user.id.toString(); 
+    const isAdmin = req.user.role === 'admin';
+
+    if (!isOwner && !isAdmin) {
+      return res.status(403).json({
+        message: "Accès refusé : vous ne pouvez modifier que vos propres cours"
+      });
+    }
+
+    // console.log(updateData);
+
+    const updateCourse = await Course.findByIdAndUpdate(
+      id,
+      { $set: updateData },
+      { new: true, runValidators: true }
+    )
+    // console.log(updateCourse)
+
+    res.status(200).json({
+      message: "Course updated successfully",
+      updateCourse
+    })
+  }catch(err){
+    next(err)
   }
 }
