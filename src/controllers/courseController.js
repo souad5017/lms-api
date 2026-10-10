@@ -88,14 +88,14 @@ export async function updateCourse(req, res, next) {
     const updateData = req.body
 
     const course = await Course.findById(id);
-    
+
     if (!course) {
       return res.status(404).json({
         message: 'not found'
       })
     }
 
-    const isOwner = course.instructor.toString() === req.user.id.toString(); 
+    const isOwner = course.trainer.toString() === req.user.id.toString();
     const isAdmin = req.user.role === 'admin';
 
     if (!isOwner && !isAdmin) {
@@ -117,7 +117,41 @@ export async function updateCourse(req, res, next) {
       message: "Course updated successfully",
       updateCourse
     })
-  }catch(err){
+  } catch (err) {
     next(err)
   }
+}
+
+export async function publishCourse(req, res, next) {
+  try {
+    const { id } = req.params
+
+    const course = await Course.findById(id);
+
+    if (!course) {
+      return res.status(404).json({ message: 'course not found' })
+    }
+
+    const isAdmin = req.user.role === 'admin';
+    const isOwner = req.user.id.toString() === course.trainer.toString()
+
+    if (!isAdmin || !isOwner) {
+      return res.status(403).json({
+        message: "Accès refusé : vous ne pouvez modifier que vos propres cours"
+      });
+    }
+
+    course.status = 'published'
+    course.publishedAt = new Date()
+
+    await Course.save()
+
+    res.status(200).json({
+      message: 'Course published successfully',
+      course
+    });
+  } catch (error) {
+    next(error);
+  }
+
 }
