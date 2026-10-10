@@ -6,12 +6,18 @@ export function auth(req, res, next) {
         const headers = req.headers.authorization;
 
         if (!headers || !headers.startsWith('Bearer ')) {
-            res.status(401).json({
+           return res.status(401).json({
                 message: "Token manquant ou format invalide"
             })
         }
 
         const token = headers.split(' ')[1];
+
+        if (!token){
+            return res.status(401).json({
+                message: 'Authentication required'
+            })
+        }
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
