@@ -6,7 +6,7 @@ export const createCourseSchema = z.object({
 
     description: z.string().trim()
         .min(10, 'Description must contain at least 10 characters'),
-    level: z.number().min(1, 'Level must be at least 1'),
+    level: z.string().min(1, 'Level required'),
     duration: z.number().min(1, 'Duration must be at least 1'),
 });
 

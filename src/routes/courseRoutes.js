@@ -9,12 +9,12 @@ import { createCourseSchema, updateCourseSchema } from "../validators/courseVali
 
 const router = express.Router();
 
-router.get('/' , getCourses);
+router.get('/' ,auth, getCourses);
 
 // GET /api/courses/:id/progress (Global progress)
 router.get('/:id/progress', auth, authorize('learner'), getCourseProgress);
 
-router.get('/:id' , getCourseById);
+router.get('/:id' ,auth, getCourseById);
 router.post('/', auth , authorize('admin' ,'trainer'), validate(createCourseSchema) ,createCourse);
 router.put('/:id', auth , authorize('admin' ,'trainer'),validate(updateCourseSchema) ,updateCourse);
 router.patch('/:id/publish', auth , authorize('admin' ,'trainer') ,publishCourse);

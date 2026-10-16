@@ -9,8 +9,8 @@ import { createResourceSchema, updateResourceSchema } from '../validators/resour
 
 const router = express.Router();
 
-router.get('/', getResources);
-router.get('/:id/resources', getResourcesByModule);
+router.get('/',auth, getResources);
+router.get('/:id/resources',auth, getResourcesByModule);
 router.post('/:id/',auth , authorize('admin' , 'trainer'),validate(createResourceSchema), upload.single('file') ,createResource)
 router.put('/:id/:resourceId',auth , authorize('admin' , 'trainer'),validate(updateResourceSchema) , upload.single('file') , updateResource)
 

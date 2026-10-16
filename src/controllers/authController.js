@@ -11,10 +11,12 @@ export async function register(req, res, next) {
             role: "learner",
             status: "active"
         })
+        const userResponse = user.toObject();
+        delete userResponse.password;
 
         res.status(201).json({
             message: "User registered successfully",
-            user
+            user: userResponse
         })
     } catch (error) {
         next(error);
