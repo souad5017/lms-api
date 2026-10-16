@@ -8,8 +8,8 @@ import { createModuleSchema, updateModuleSchema } from '../validators/moduleVali
 
 const router = express.Router();
 
-router.get('/', getModules);
-router.get('/:id/modules' ,getModulesByCourse);
+router.get('/',auth, getModules);
+router.get('/:id/modules',auth ,getModulesByCourse);
 router.post('/:id/',auth , authorize('admin' ,'trainer'), validate(createModuleSchema),createModule)
 router.put('/:id/:moduleId',auth , authorize('admin' ,'trainer'),validate(updateModuleSchema),updateModule)
 

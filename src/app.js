@@ -1,5 +1,4 @@
 import 'dotenv/config'
-import connectDB from "./config/db.js";
 import express from 'express'
 import multer from 'multer';
 
@@ -40,9 +39,5 @@ app.use((err, req, res, next) => {
 
 app.use(notFound);
 app.use(errorHandler);
-connectDB();
 
-app.listen(process.env.PORT, () => {
-    console.log(`
-        http://localhost:${process.env.PORT}`)
-})
+export default app
