@@ -25,7 +25,7 @@ export async function getModulesByCourse(req, res, next) {
     const modules = await Module.find({
       course: id,
       status: 'published'
-    }).sort({ order: 1 });
+    }).sort({ order: 1 ,  _id: 1});
 
     res.status(200).json(modules);
   } catch (error) {

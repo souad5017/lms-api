@@ -44,6 +44,14 @@ const enrollmentSchema = new mongoose.Schema(
   }
 );
 
+enrollmentSchema.index(
+    { learner: 1, course: 1 },
+    {
+        unique: true,
+        partialFilterExpression: { status: 'active' }
+    }
+);
+
 
 const Enrollment = mongoose.model('Enrollment', enrollmentSchema);
 
