@@ -60,3 +60,26 @@ export async function login(req, res, next) {
     }
 
 }
+
+export async function getProfile(req, res, next) {
+    try {
+        const user = await User.findById(req.user.id)
+            .select('-password');
+
+        if (!user) {
+            return res.status(404).json({
+                message: 'User not found'
+            });
+        }
+
+        if (user.status !== 'active') {
+            return res.status(403).json({
+                message: 'Account is disabled'
+            });
+        }
+
+        res.status(200).json({ user });
+    } catch (error) {
+        next(error);
+    }
+}
