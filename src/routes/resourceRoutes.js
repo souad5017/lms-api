@@ -12,7 +12,7 @@ const router = express.Router();
 router.get('/', auth, getResources);
 router.get('/:id/resources', auth, getResourcesByModule);
 router.post('/:id/', auth, authorize('admin', 'trainer'), upload.single('file'), validate(createResourceSchema), createResource)
-router.put('/:id/:resourceId', auth, authorize('admin', upload.single('file'), 'trainer'), validate(updateResourceSchema), updateResource)
+router.put('/:id/:resourceId', auth, authorize('admin', 'trainer'), upload.single('file'), validate(updateResourceSchema), updateResource)
 
 // POST /api/resources/:id/complete 
 router.post('/:id/complete', auth, authorize('learner'), markResourceComplete);

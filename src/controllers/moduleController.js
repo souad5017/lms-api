@@ -58,7 +58,7 @@ export async function createModule(req, res, next) {
       course: id
     })
 
-    res.json({
+    res.status(201).json({
       message: 'module created successfully',
       module
     })
