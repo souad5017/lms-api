@@ -484,6 +484,108 @@ describe('Courses API', () => {
 
         expect(response.status).toBe(401);
     });
+    test('POST /api/courses - should reject invalid course data', async () => {
+        const trainer = await User.create({
+            name: 'Course Test Trainer',
+            email: 'course-test-invalid@test.com',
+            password: 'Password123!',
+            role: 'trainer',
+            status: 'active'
+        });
 
+        const loginResponse = await request(app)
+            .post('/api/auth/login')
+            .send({
+                email: trainer.email,
+                password: 'Password123!'
+            });
+
+        const response = await request(app)
+            .post('/api/courses')
+            .set('Authorization', `Bearer ${loginResponse.body.token}`)
+            .send({
+                title: '',
+                description: 'Invalid course',
+                level: 'impossible',
+                category: 'Development',
+                duration: -5
+            });
+
+        expect(response.status).toBe(400);
+    });
+    test('POST /api/courses - should reject missing required fields', async () => {
+        const trainer = await User.create({
+            name: 'Course Test Trainer',
+            email: 'course-test-missing@test.com',
+            password: 'Password123!',
+            role: 'trainer',
+            status: 'active'
+        });
+
+        const loginResponse = await request(app)
+            .post('/api/auth/login')
+            .send({
+                email: trainer.email,
+                password: 'Password123!'
+            });
+
+        const response = await request(app)
+            .post('/api/courses')
+            .set('Authorization', `Bearer ${loginResponse.body.token}`)
+            .send({
+                title: 'Course Test Missing Fields'
+            });
+
+        expect(response.status).toBe(400);
+    });
+    test('PUT /api/courses/:id - should reject an invalid course ID', async () => {
+        const trainer = await User.create({
+            name: 'Course Test Trainer',
+            email: 'course-test-invalid-id@test.com',
+            password: 'Password123!',
+            role: 'trainer',
+            status: 'active'
+        });
+
+        const loginResponse = await request(app)
+            .post('/api/auth/login')
+            .send({
+                email: trainer.email,
+                password: 'Password123!'
+            });
+
+        const response = await request(app)
+            .put('/api/courses/invalid-id')
+            .set('Authorization', `Bearer ${loginResponse.body.token}`)
+            .send({
+                title: 'Course Test Updated'
+            });
+
+        expect(response.status).toBe(400);
+    });
+    test('PATCH /api/courses/:id/publish - should return 404 for a non-existent course', async () => {
+        const trainer = await User.create({
+            name: 'Course Test Trainer',
+            email: 'course-test-publish-missing@test.com',
+            password: 'Password123!',
+            role: 'trainer',
+            status: 'active'
+        });
+
+        const loginResponse = await request(app)
+            .post('/api/auth/login')
+            .send({
+                email: trainer.email,
+                password: 'Password123!'
+            });
+
+        const nonExistentId = new mongoose.Types.ObjectId();
+
+        const response = await request(app)
+            .patch(`/api/courses/${nonExistentId}/publish`)
+            .set('Authorization', `Bearer ${loginResponse.body.token}`);
+
+        expect(response.status).toBe(404);
+    });
 
 });

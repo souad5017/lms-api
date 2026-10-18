@@ -15,16 +15,16 @@ export async function getResources(req, res, next) {
 
 export async function getResourcesByModule(req, res, next) {
   try {
-    const { moduleId } = req.params;
+    const { id } = req.params;
 
-    if (!moduleId) {
+    if (!id) {
       return res.status(404).json({
         message: "module not found"
       })
     }
 
     const ressources = await Resource.find({
-      module: moduleId
+      module: id
     }).sort({ order: 1 })
 
     res.status(200).json(ressources);
@@ -95,11 +95,14 @@ export async function updateResource(req, res, next) {
 
     let data = { title, type, description, order }
 
-    const resource = await Resource.findById(resourceId)
+    const resource = await Resource.findOne({
+      _id: resourceId,
+      module: id
+    });
 
     if (!resource) {
       return res.status(404).json({
-        message: 'module not found'
+        message: 'resource not found'
       })
     }
 
@@ -134,8 +137,8 @@ export async function updateResource(req, res, next) {
 
     const updateResource = await Resource.findByIdAndUpdate(
       resourceId,
-      {set: data},
-      {new: true , runValidators:true}
+      { $set: data },
+      { new: true, runValidators: true }
     )
 
     res.status(200).json({

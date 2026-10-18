@@ -1,4 +1,4 @@
-import {z} from "zod";
+import { z } from "zod";
 
 export const createResourceSchema = z.object({
     title: z.string().trim().min(3, 'Title must contain at least 3 characters')
@@ -7,7 +7,8 @@ export const createResourceSchema = z.object({
         ['video', 'pdf', 'article', 'link', 'exercise'],
         { message: 'Type must be video, pdf, article, link or exercise' }
     ),
-    description: z.string().trim().min(10, 'Description must contain at least 10 characters'),
+    url: z.string().trim().url('URL must be valid'),
+    description: z.string().trim().optional().default(''),
     order: z.number().min(1, 'order must be at least 1'),
 
 })

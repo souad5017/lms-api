@@ -14,10 +14,21 @@ afterAll(async () => {
     await mongoose.connection.close();
 });
 
+afterEach(async () => {
+    await User.deleteMany({
+        email: {
+            $in: [
+                'learner@test.com',
+                'disabled@test.com'
+            ]
+        }
+    });
+});
+
 describe('Authentication API', () => {
     const testUser = {
         name: 'Test Learner',
-        email: 'learner1212@test.com',
+        email: 'learner@test.com',
         password: 'Password123'
     };
 
