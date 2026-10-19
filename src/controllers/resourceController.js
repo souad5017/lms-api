@@ -17,20 +17,29 @@ export async function getResourcesByModule(req, res, next) {
   try {
     const { id } = req.params;
 
-    if (!id) {
+    const module = await Module.findById(id);
+
+    if (!module) {
       return res.status(404).json({
-        message: "module not found"
-      })
+        message: 'Module not found',
+      });
     }
 
-    const ressources = await Resource.find({
-      module: id
-    }).sort({ order: 1 })
+    const course = await Course.findById(module.course);
 
-    res.status(200).json(ressources);
+    if (!course || course.status !== 'published') {
+      return res.status(404).json({
+        message: 'Course not found',
+      });
+    }
 
+    const resources = await Resource.find({
+      module: module._id,
+    }).sort({ order: 1, _id: 1 });
+
+    return res.status(200).json(resources);
   } catch (error) {
-    next(error)
+    next(error);
   }
 }
 
